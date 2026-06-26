@@ -2,305 +2,498 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>تطوان فارما - TETUAN PHARMA</title>
-
-    <link rel="apple-touch-icon" href="https://i.postimg.cc/4NkYW4Z0/IMG-2082.jpg?v=2">
-    <link rel="icon" type="image/png" href="https://i.postimg.cc/4NkYW4Z0/IMG-2082.jpg?v=2">
-    <link rel="shortcut icon" href="https://i.postimg.cc/4NkYW4Z0/IMG-2082.jpg?v=2">
-
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="تطوان فارما">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#0f172a">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MatchFabor - البث المباشر للمباريات</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.css" />
+    <script src="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.polyfilled.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    
     <style>
-        :root { 
-            --primary: #4ade80; 
-            --night: #fbbf24; 
-            --danger: #ff4d4d; 
-            --glass: rgba(255, 255, 255, 0.1); 
-            --accent-blue: #3498db;
-            --purple: #a855f7;
-            --font-main: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
-        
-        body { 
-            margin: 0; min-height: 100vh; display: flex; justify-content: center; 
-            background: #0f172a; 
-            font-family: var(--font-main); color: white; overflow-x: hidden;
+        .netflix-bg {
+            background-color: #0e0e10;
         }
 
-        .fog-container {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; overflow: hidden; pointer-events: none;
-        }
-        .fog-glow {
-            position: absolute; width: 400px; height: 400px;
-            background: radial-gradient(circle, rgba(74, 222, 128, 0.15) 0%, rgba(15, 23, 42, 0) 70%);
+        .cinema-glow {
+            position: fixed;
+            top: -20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(229, 9, 20, 0.05) 0%, rgba(0,0,0,0) 80%);
             border-radius: 50%;
-            animation: drift 12s infinite alternate ease-in-out;
-        }
-        @keyframes drift {
-            0% { transform: translate(-10%, -10%) scale(1); }
-            100% { transform: translate(80%, 50%) scale(1.5); }
+            z-index: 0;
+            pointer-events: none;
         }
 
-        .app-container { 
-            width: 100%; max-width: 500px; padding: 20px; padding-bottom: 120px; 
-            padding-top: calc(20px + env(safe-area-inset-top));
-        }
-
-        header { 
-            display: flex; align-items: center; justify-content: space-between; 
-            margin-bottom: 25px; text-align: right; 
-        }
-        .brand-info { flex: 1; }
-        .brand-logo-text { 
-            font-size: 26px; font-weight: 900; 
-            background: linear-gradient(45deg, #ffffff, var(--primary)); 
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            display: block; 
+        .hidden-player { max-height: 0; opacity: 0; overflow: hidden; transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1); }
+        .hidden-player.active { max-height: 1000px; opacity: 1; margin-bottom: 2rem; }
+        
+        .netflix-slider {
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
         }
         
-        .side-logo-img {
-            width: 75px; height: 75px; border-radius: 50%;
-            border: 3px solid var(--primary); background: white;
-            object-fit: cover; margin-right: 15px;
-            animation: float 4s infinite ease-in-out;
-            box-shadow: 0 0 15px rgba(74, 222, 128, 0.5);
+        .plyr--video {
+            --plyr-color-main: #e50914;
+            border-radius: 12px;
         }
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-8px) rotate(5deg); }
-        }
-
-        .official-partnership {
-            font-size: 11px; color: var(--primary); font-weight: bold; 
-            background: rgba(74, 222, 128, 0.1); 
-            display: inline-block; padding: 4px 12px; border-radius: 50px; 
-            border: 1px solid rgba(74, 222, 128, 0.3); margin-top: 5px;
-        }
-
-        .interactive-banner { 
-            background: linear-gradient(-45deg, rgba(168, 85, 247, 0.4), rgba(52, 152, 219, 0.4), rgba(74, 222, 128, 0.4));
-            background-size: 400% 400%; animation: gradientBG 8s ease infinite;
-            backdrop-filter: blur(15px); margin-bottom: 25px; padding: 20px; border-radius: 25px; 
-            border: 1px solid rgba(255, 255, 255, 0.15); text-align: center;
-        }
-        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-
-        #weather-link {
-            margin-top: 15px;
-            padding: 10px;
-            background: rgba(0,0,0,0.25);
-            border-radius: 15px;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            color: #fbbf24;
-            font-weight: bold;
-            font-size: 14px;
-            border: 1px solid rgba(251, 191, 36, 0.2);
-            transition: 0.2s;
-        }
-        #weather-link:active { transform: scale(0.96); }
-
-        .search-row { display: flex; gap: 12px; align-items: center; margin-bottom: 20px; }
-        .search-box-wrapper { flex: 1; }
-        .search-box-wrapper input { 
-            width: 100%; padding: 15px; border-radius: 18px; 
-            border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); 
-            color: white; outline: none; font-size: 16px; box-sizing: border-box;
-        }
-
-        .gmail-3d-btn {
-            width: 50px; height: 50px; background: white; border-radius: 15px;
-            display: flex; justify-content: center; align-items: center;
-            text-decoration: none; font-size: 22px; flex-shrink: 0;
-        }
-
-        .ph-card { 
-            background: var(--glass); backdrop-filter: blur(20px); border-radius: 22px; 
-            padding: 18px; border: 1px solid rgba(255,255,255,0.05); 
-            display: flex; justify-content: space-between; align-items: center; 
-            margin-bottom: 15px; transition: 0.3s; animation: slideUp 0.5s ease forwards;
-        }
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-        .ph-card.open { border-right: 6px solid var(--primary); }
-        .ph-card.night { border-right: 6px solid var(--night); }
-
-        .filter-buttons { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 20px; }
-        .filter-btn { background: var(--glass); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 10px; border-radius: 12px; font-weight: bold; }
-        .filter-btn.active { background: var(--primary); color: #064e3b; }
-
-        .action-icon { background: white; color: black; width: 42px; height: 42px; border-radius: 12px; display: flex; justify-content: center; align-items: center; text-decoration: none; font-size: 18px; }
-
-        .share-btn { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #064e3b; border: none; padding: 16px; border-radius: 35px; font-weight: bold; z-index: 1000; width: 85%; max-width: 320px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
     </style>
 </head>
-<body>
+<body class="netflix-bg text-zinc-100 font-sans selection:bg-[#e50914] selection:text-white relative min-h-screen overflow-x-hidden pb-28">
 
-<div class="fog-container">
-    <div class="fog-glow"></div>
-</div>
+    <div class="cinema-glow"></div>
 
-<div class="app-container">
-    <header>
-        <div class="brand-info">
-            <span class="brand-logo-text">TETUAN PHARMA</span>
-            <div class="official-partnership">✨ نقابة صيادلة تطوان</div>
-            <div id="greeting" style="font-size: 12px; margin-top: 5px; opacity: 0.8;">...</div>
+    <div id="toast-notice" class="fixed top-24 left-1/2 -translate-x-1/2 z-50 bg-[#e50914] text-white text-xs font-bold px-4 py-2.5 rounded-md shadow-2xl transition-all duration-500 opacity-0 pointer-events-none transform translate-y-[-20px] flex items-center gap-2 border border-white/10">
+        <span class="w-2 h-2 rounded-full bg-white animate-ping"></span>
+        <span id="toast-text">جاري الانتقال للسيرفر الاحتياطي...</span>
+    </div>
+
+    <header class="bg-[#0e0e10]/80 backdrop-blur-xl border-b border-zinc-800/50 px-6 py-4 relative z-10 sticky top-0">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <h1 class="text-2xl font-black tracking-tighter text-[#e50914] uppercase">MATCH<span class="text-white font-light">FABOR</span></h1>
+                <span class="w-2 h-2 rounded-full bg-[#e50914] animate-pulse self-end mb-1"></span>
+            </div>
+            <div class="text-xs text-zinc-400 font-medium bg-zinc-900 px-4 py-1.5 rounded-md border border-zinc-800" id="current-date"></div>
         </div>
-        <img src="https://i.postimg.cc/4NkYW4Z0/IMG-2082.jpg" class="side-logo-img" alt="Logo">
     </header>
 
-    <div class="interactive-banner">
-        <span style="background:white; color:var(--purple); padding:2px 10px; border-radius:20px; font-size:10px; font-weight:900;">نصيحة اليوم 🤍</span>
-        <p id="health-tip" style="margin: 12px 0; font-size: 16px; font-weight: bold;">...</p>
+    <div class="max-w-7xl mx-auto px-4 pt-4 flex justify-center relative z-10">
+        <div class="bg-zinc-950/40 border border-zinc-800/60 p-2 rounded-xl overflow-hidden shadow-md max-w-full">
+            <script src="https://pl29824822.effectivecpmnetwork.com/28/7f/f3/287ff3457dc6bed6facd82cac473fe6e.js"></script>
+        </div>
+    </div>
+
+    <main class="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-8 relative z-10">
         
-        <div style="display: flex; gap: 8px;">
-            <a href="tel:15" style="background: var(--danger); color: white; padding: 8px; border-radius: 10px; text-decoration: none; font-size: 12px; flex: 1; text-align: center;">🚑 إسعاف</a>
-            <a href="tel:19" style="background: var(--accent-blue); color: white; padding: 8px; border-radius: 10px; text-decoration: none; font-size: 12px; flex: 1; text-align: center;">👮 شرطة</a>
-        </div>
-
-        <a href="https://weather.com/weather/today/l/35.58,-5.36" target="_blank" id="weather-link">
-            <span id="weather-icon">🌦️</span>
-            <span id="weather-text">جاري جلب الجو...</span>
-        </a>
-    </div>
-
-    <div class="search-row">
-        <div class="search-box-wrapper">
-            <input type="text" id="searchInput" placeholder="فتش على صيدلية أو حومة..." onkeyup="handleSearch()">
-        </div>
-        <a href="mailto:contact@tetuanpharma.com" class="gmail-3d-btn">✉️</a>
-    </div>
-
-    <div class="filter-buttons">
-        <button class="filter-btn active" id="allBtn" onclick="setFilter('all')">الكل</button>
-        <button class="filter-btn" id="openBtn" onclick="setFilter('open')">مفتوحة</button>
-        <button class="filter-btn" id="nightBtn" onclick="setFilter('night')">حراسة</button>
-    </div>
-
-    <div id="pList">مزامنة البيانات الحية...</div>
-
-    <button class="share-btn" onclick="shareApp()">صيفط التطبيق للحباب 📤</button>
-</div>
-
-<script>
-    const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1-qzlNIF6DXq_Em17_01ndliRUhB9gg5rAUM3hQIwqqc/export?format=csv'; 
-    let allData = [];
-
-    const medicalTips = [
-        "رخي على راسك وشبر النفس طويل، الأكسجين كيهدن الأعصاب يا الحبيب. 🧠",
-        "شريب الماء دافي مع الليمون ف الصباح كيقوي المناعة وكيصفي الذات. 🍋",
-        "النعاس بكري والراحة هي الساس د الصحة د العقل والقلب. 😴",
-        "تمشى شوية ف الكورنيش، الهوا د البحر كيصفي الرية والبال. 🌊",
-        "نقص من السكر والحلويات راه هما الساس د العيا والنفخة. 🍎"
-    ];
-
-    function updateAdvice() {
-        document.getElementById('health-tip').innerText = medicalTips[Math.floor(Math.random() * medicalTips.length)];
-    }
-
-    function updateHeaderInfo() {
-        const now = new Date();
-        const hour = now.getHours();
-        const greet = document.getElementById('greeting');
-        if (hour >= 5 && hour < 12) greet.innerText = "صباح الخير والرباح ☀️";
-        else if (hour >= 12 && hour < 18) greet.innerText = "نهارك مبروك يا الحبيب 🌤️";
-        else greet.innerText = "مساء الخير والراحة 🌙";
-    }
-
-    async function fetchWeather() {
-        try {
-            const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=35.5785&longitude=-5.3684&current_weather=true');
-            const data = await res.json();
-            const temp = Math.round(data.current_weather.temperature);
-            const code = data.current_weather.weathercode;
-            let icon = "☀️";
-            if (code > 0 && code < 4) icon = "⛅"; else if (code >= 51) icon = "🌧️";
-            document.getElementById('weather-icon').innerText = icon;
-            document.getElementById('weather-text').innerText = `تطوان الآن: ${temp}°C`;
-        } catch (e) {
-            document.getElementById('weather-text').innerText = "تطوان: عرض الطقس";
-        }
-    }
-
-    async function init() {
-        updateHeaderInfo();
-        updateAdvice();
-        fetchWeather();
-        setInterval(updateAdvice, 10000);
-        try {
-            const res = await fetch(SHEET_URL);
-            const text = await res.text();
-            const rows = text.split(/\r?\n/).filter(r => r.trim() !== "").slice(1);
-            allData = rows.map(r => {
-                const cols = r.split(',');
-                return { 
-                    name: (cols[0] || "").replace(/"/g,'').trim(), 
-                    area: (cols[1] || "").replace(/"/g,'').trim(), 
-                    phone: (cols[2] || "").replace(/"/g,'').trim(), 
-                    status: (cols[3] || "").replace(/"/g,'').trim().toLowerCase() 
-                };
-            });
-            render(allData);
-        } catch(e) { 
-            document.getElementById('pList').innerHTML = "خطأ في المزامنة."; 
-        }
-    }
-
-    function render(data) {
-        const list = document.getElementById('pList');
-        if (data.length === 0) {
-            list.innerHTML = "<p style='text-align:center; opacity:0.6;'>لا توجد نتائج...</p>";
-            return;
-        }
-        list.innerHTML = data.map((p, index) => {
-            const searchStr = p.name + " صيدلية " + p.area + " تطوان";
-            const mapUrl = "https://www.google.com/maps/search/" + encodeURIComponent(searchStr);
-            return `
-                <div class="ph-card ${p.status}" style="animation-delay: ${index * 0.1}s">
-                    <div class="ph-info">
-                        <h3 style="margin:0; font-size:17px; color:white;">${p.name}</h3>
-                        <p style="margin:4px 0; font-size:12px; opacity:0.7;">📍 ${p.area}</p>
-                        <span style="font-size:11px; font-weight:bold; color:${p.status === 'night' ? 'var(--night)' : (p.status === 'open' ? 'var(--primary)' : '#888')}">
-                            ${p.status === 'night' ? '🌙 حراسة ليلية' : (p.status === 'open' ? '☀️ مفتوحة الآن' : '🔒 مغلقة')}
-                        </span>
+        <div class="lg:col-span-2 space-y-6">
+            <div id="player-wrapper" class="hidden-player">
+                <div id="fullscreen-target" class="bg-black rounded-2xl overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.8)] border border-zinc-800 aspect-video relative">
+                    <video id="player" playsinline controls class="w-full h-full"></video>
+                </div>
+                <div class="bg-zinc-900/90 backdrop-blur-md p-5 rounded-b-2xl border-x border-b border-zinc-800/80 space-y-4">
+                    <div class="flex justify-between items-center">
+                        <h2 id="current-match-title" class="font-bold text-lg text-white">اسم المباراة</h2>
+                        <span class="bg-[#e50914] text-white text-[11px] px-2.5 py-0.5 rounded font-bold animate-pulse">LIVE</span>
                     </div>
-                    <div class="ph-actions" style="display:flex; gap:8px;">
-                        <a href="${mapUrl}" target="_blank" class="action-icon" style="background:var(--accent-blue); color:white;">📍</a>
-                        <a href="tel:${p.phone}" class="action-icon">📞</a>
+                    <div>
+                        <p class="text-xs text-zinc-400 mb-2">اختر سيرفر البث السريع:</p>
+                        <div id="servers-container" class="flex flex-wrap gap-2"></div>
                     </div>
                 </div>
-            `;
-        }).join('');
-    }
+            </div>
 
-    function handleSearch() {
-        const term = document.getElementById('searchInput').value.toLowerCase();
-        const filtered = allData.filter(p => (p.name.toLowerCase().includes(term) || p.area.toLowerCase().includes(term)));
-        render(filtered);
-    }
+            <div id="tomorrow-slider-wrapper" class="relative bg-zinc-950 min-h-[260px] rounded-2xl border border-zinc-800/80 overflow-hidden shadow-2xl group flex flex-col justify-end p-6">
+                
+                <div class="absolute inset-0 bg-cover bg-center pointer-events-none z-0" style="background-image: url('https://k.top4top.io/p_3826fcdgv0.jpeg');"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-[#0e0e10] via-[#0e0e10]/50 to-transparent z-0"></div>
 
-    function setFilter(type) {
-        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-        document.getElementById(type + 'Btn').classList.add('active');
-        const filtered = type === 'all' ? allData : allData.filter(p => p.status === type);
-        render(filtered);
-    }
+                <div class="absolute top-4 right-4 z-30 flex items-center gap-2 bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-full border border-zinc-800">
+                    <span class="w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>
+                    <span class="text-xs font-black text-amber-500 uppercase tracking-wider">الأكثر ترقباً غداً</span>
+                </div>
+                
+                <div id="tomorrow-card-container" class="netflix-slider w-full space-y-3 z-10 relative" onmouseenter="pauseTomorrowSlider()" onmouseleave="startTomorrowSlider()">
+                    <div class="text-center py-20 text-xs text-zinc-500 italic">جاري التحميل...</div>
+                </div>
+                
+                <div id="slider-dots" class="absolute bottom-4 left-6 z-30 flex gap-1.5"></div>
+            </div>
+        </div>
 
-    function shareApp() {
-        if (navigator.share) navigator.share({ title: 'تطوان فارما', text: 'صيدليات تطوان في جيبك', url: window.location.href });
-    }
+        <div class="space-y-4">
+            <h3 class="font-black text-base flex items-center gap-2 text-white">
+                <span class="w-1.5 h-4 bg-[#e50914] rounded-full"></span>مباريات اليوم
+            </h3>
+            <div id="today-matches-list" class="space-y-3.5">
+                <div class="text-center py-6 text-xs text-zinc-500 italic">جاري مزامنة الأحداث الحية...</div>
+            </div>
+        </div>
 
-    init();
-</script>
+    </main>
+
+    <div class="fixed bottom-0 left-0 right-0 bg-[#0e0e10]/90 backdrop-blur-xl border-t border-zinc-800/80 py-4 px-6 z-50 flex justify-center gap-4 shadow-[0_-10px_30px_rgba(0,0,0,0.5)]">
+        <button onclick="goBack()" class="flex items-center justify-center gap-2 bg-zinc-900 hover:bg-zinc-800 text-zinc-200 text-xs font-bold uppercase tracking-wider px-6 py-3 rounded-md border border-zinc-800 transition transform active:scale-95 w-full max-w-[180px]">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4 rotate-180">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+            </svg>
+            الرئيسية
+        </button>
+        <button onclick="shareApp()" class="flex items-center justify-center gap-2 bg-[#e50914] hover:bg-[#b80710] text-white text-xs font-bold uppercase tracking-wider px-6 py-3 rounded-md transition transform active:scale-95 w-full max-w-[180px] shadow-lg shadow-[#e50914]/20">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186l5.308-2.654m-5.308 2.654l5.308 2.654m-9.754-2.654a3.75 3.75 0 117.5 0 3.75 3.75 0 01-7.5 0zm9.754-2.25a2.25 2.25 0 114.5 0 2.25 2.25 0 01-4.5 0zm0 9a2.25 2.25 0 114.5 0 2.25 2.25 0 01-4.5 0z" />
+            </svg>
+            مشاركة
+        </button>
+    </div>
+
+    <script src="https://pl29824121.effectivecpmnetwork.com/fe/af/56/feaf562a9e970554a08f0c58019236c3.js"></script>
+
+    <script>
+        const SPREADSHEET_ID = "1E3Cw1CwCOmdvNUhOIRlLta4bmyxTBkISlHlgdX8q_Lk";
+        const TODAY_CSV_URL = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=Sheet1`;
+        const TOMORROW_CSV_URL = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=Sheet2`;
+
+        let todayMatches = [];
+        let tomorrowMatches = [];
+        let tomorrowIndex = 0;
+        let tomorrowInterval = null;
+
+        let currentActiveMatchServers = [];
+        let currentServerIndex = 0;
+        let isSwitchingServer = false;
+
+        const videoElement = document.getElementById('player');
+        const player = new Plyr(videoElement, { controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'] });
+        let hlsInstance = null;
+
+        function parseCSVLine(text) {
+            let p = '', r = [];
+            let q = false;
+            for (let i = 0; i < text.length; i++) {
+                let c = text[i];
+                if (c === '"') { q = !q; }
+                else if (c === ',' && !q) { r.push(p.trim()); p = ''; }
+                else { p += c; }
+            }
+            r.push(p.trim());
+            return r;
+        }
+
+        function calculateMatchStatus(matchTimeStr) {
+            if (!matchTimeStr || !matchTimeStr.includes(':')) return { text: "غير محدد", isLive: false, color: "text-zinc-500" };
+            const now = new Date();
+            const [hours, minutes] = matchTimeStr.split(':').map(Number);
+            const matchDate = new Date();
+            matchDate.setHours(hours, minutes, 0, 0);
+            const diffInMinutes = (now - matchDate) / (1000 * 60);
+
+            if (diffInMinutes < -5) return { text: "لم تبدأ بعد", isLive: false, color: "text-zinc-400 font-medium" };
+            else if (diffInMinutes >= -5 && diffInMinutes <= 125) return { text: "مباشر 🔴", isLive: true, color: "text-[#e50914] font-black animate-pulse" };
+            else return { text: "انتهت المباراة", isLive: false, color: "text-zinc-600 line-through" };
+        }
+
+        async function fetchTodayMatches() {
+            try {
+                const response = await fetch(TODAY_CSV_URL);
+                const data = await response.text();
+                const lines = data.split(/\r?\n/);
+
+                todayMatches = [];
+                for (let i = 1; i < lines.length; i++) {
+                    if (!lines[i]) continue;
+                    const r = parseCSVLine(lines[i]);
+                    if (r.length < 6 || !r[1]) continue; 
+
+                    let servers = [];
+                    if(r[8] && r[9]) servers.push({ name: r[8], url: r[9] }); 
+                    if(r[10] && r[11]) servers.push({ name: r[10], url: r[11] }); 
+                    if(r[12] && r[13]) servers.push({ name: r[12], url: r[13] }); 
+
+                    const autoStatus = calculateMatchStatus(r[5]);
+
+                    todayMatches.push({
+                        id: parseInt(r[0]) || i,
+                        teamA: r[1],
+                        logoA: r[2],
+                        teamB: r[3],
+                        logoB: r[4],
+                        time: r[5],
+                        league: r[6],
+                        status: autoStatus.text,
+                        statusColor: autoStatus.color,
+                        isLive: autoStatus.isLive,
+                        servers: servers
+                    });
+                }
+                renderTodayMatches();
+            } catch (error) { console.error(error); }
+        }
+
+        async function fetchTomorrowMatches() {
+            try {
+                const response = await fetch(TOMORROW_CSV_URL);
+                const data = await response.text();
+                const lines = data.split(/\r?\n/);
+
+                tomorrowMatches = [];
+                for (let i = 1; i < lines.length; i++) {
+                    if (!lines[i]) continue;
+                    const r = parseCSVLine(lines[i]);
+                    if (r.length < 5 || !r[1]) continue; 
+                    tomorrowMatches.push({
+                        teamA: r[1],
+                        logoA: r[2] || 'https://placehold.co/40x40?text=Logo',
+                        teamB: r[3],
+                        logoB: r[4] || 'https://placehold.co/40x40?text=Logo',
+                        time: r[5] || '--:--',
+                        league: r[6] || 'بطولة دولية'
+                    });
+                }
+                buildDots(); startTomorrowSlider();
+            } catch (error) { console.error(error); }
+        }
+
+        function buildDots() {
+            const dotsContainer = document.getElementById('slider-dots');
+            dotsContainer.innerHTML = '';
+            tomorrowMatches.forEach((_, idx) => {
+                const dot = document.createElement('span');
+                dot.className = `h-1 rounded-full transition-all duration-300 ${idx === 0 ? 'w-4 bg-[#e50914]' : 'w-1 bg-zinc-600'}`;
+                dot.id = `dot-${idx}`;
+                dotsContainer.appendChild(dot);
+            });
+        }
+
+        function updateDots() {
+            tomorrowMatches.forEach((_, idx) => {
+                const dot = document.getElementById(`dot-${idx}`);
+                if(dot) dot.className = idx === tomorrowIndex ? 'h-1 w-4 bg-[#e50914] rounded-full transition-all duration-300' : 'h-1 w-1 bg-zinc-600 rounded-full transition-all duration-300';
+            });
+        }
+
+        function startTomorrowSlider() {
+            if (tomorrowMatches.length === 0) {
+                document.getElementById('tomorrow-card-container').innerHTML = `<div class="text-center py-20 text-xs text-zinc-500 italic">لا توجد مباريات مجدولة للغد.</div>`;
+                return;
+            }
+            renderTomorrowCard(); clearInterval(tomorrowInterval);
+            tomorrowInterval = setInterval(() => {
+                tomorrowIndex = (tomorrowIndex + 1) % tomorrowMatches.length;
+                renderTomorrowCard(); updateDots();
+            }, 3500); 
+        }
+
+        function pauseTomorrowSlider() { clearInterval(tomorrowInterval); }
+
+        function renderTomorrowCard() {
+            const container = document.getElementById('tomorrow-card-container');
+            const match = tomorrowMatches[tomorrowIndex];
+            if (!match) return;
+
+            container.style.opacity = 0; 
+            container.style.transform = 'scale(0.98)';
+            
+            setTimeout(() => {
+                container.innerHTML = `
+                    <div class="absolute inset-0 bg-cover bg-center filter blur-3xl opacity-20 mix-blend-screen pointer-events-none scale-125 transition-all duration-700" style="background-image: url('${match.logoA}');"></div>
+                    
+                    <div class="relative z-10 w-full mt-auto space-y-3">
+                        <div class="text-zinc-400 font-sans text-[11px] tracking-wider font-bold text-center bg-zinc-900/40 backdrop-blur-sm py-1 px-3 rounded-full border border-zinc-800/50 inline-block mx-auto mb-1">
+                            🏆 ${match.league}
+                        </div>
+                        
+                        <div class="grid grid-cols-7 items-center bg-zinc-900/30 backdrop-blur-xl p-5 rounded-2xl border border-zinc-800/80 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+                            
+                            <div class="col-span-2 flex flex-col items-center justify-center text-center space-y-2">
+                                <div class="w-14 h-14 bg-zinc-950/50 p-2 rounded-xl border border-zinc-800 flex items-center justify-center shadow-inner">
+                                    <img src="${match.logoA}" class="w-full h-full object-contain filter drop-shadow-[0_4px_6px_rgba(0,0,0,0.6)]" onerror="this.src='https://placehold.co/40x40?text=Logo'">
+                                </div>
+                                <span class="font-black text-xs md:text-sm text-zinc-200 line-clamp-1 w-full px-1">${match.teamA}</span>
+                            </div>
+                            
+                            <div class="col-span-3 flex flex-col items-center justify-center px-2">
+                                <div class="w-full max-w-[120px] bg-gradient-to-b from-amber-500/10 to-amber-500/5 border border-amber-500/30 rounded-xl overflow-hidden shadow-lg shadow-amber-500/5">
+                                    <div class="bg-gradient-to-r from-amber-600 to-amber-500 text-black text-[9px] font-black py-0.5 text-center uppercase tracking-wider">
+                                        موعد العرض
+                                    </div>
+                                    <div class="bg-zinc-950/90 py-2.5 text-center text-amber-400 font-mono font-black text-base md:text-lg tracking-wide border-t border-zinc-900">
+                                        ${match.time}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-span-2 flex flex-col items-center justify-center text-center space-y-2">
+                                <div class="w-14 h-14 bg-zinc-950/50 p-2 rounded-xl border border-zinc-800 flex items-center justify-center shadow-inner">
+                                    <img src="${match.logoB}" class="w-full h-full object-contain filter drop-shadow-[0_4px_6px_rgba(0,0,0,0.6)]" onerror="this.src='https://placehold.co/40x40?text=Logo'">
+                                </div>
+                                <span class="font-black text-xs md:text-sm text-zinc-200 line-clamp-1 w-full px-1">${match.teamB}</span>
+                            </div>
+                            
+                        </div>
+                    </div>`;
+                container.style.opacity = 1; 
+                container.style.transform = 'scale(1)';
+            }, 150);
+        }
+
+        async function triggerFullscreenAndLandscape() {
+            const playerWrapper = document.getElementById('fullscreen-target');
+            try {
+                if (playerWrapper.requestFullscreen) await playerWrapper.requestFullscreen();
+                else if (playerWrapper.webkitRequestFullscreen) await playerWrapper.webkitRequestFullscreen();
+                else if (videoElement.webkitEnterFullscreen) { videoElement.webkitEnterFullscreen(); return; }
+
+                if (screen.orientation && screen.orientation.lock) {
+                    await screen.orientation.lock('landscape').catch(() => {});
+                }
+            } catch (error) { console.error(error); }
+        }
+
+        function showToastNotification(text) {
+            const toast = document.getElementById('toast-notice');
+            document.getElementById('toast-text').innerText = text;
+            toast.style.opacity = "1";
+            toast.style.transform = "translateY(0) translateX(-50%)";
+            setTimeout(() => {
+                toast.style.opacity = "0";
+                toast.style.transform = "translateY(-20px) translateX(-50%)";
+            }, 4000);
+        }
+
+        function handleServerAutoSwitch() {
+            if (isSwitchingServer) return;
+            
+            if (currentActiveMatchServers.length > 1 && currentServerIndex < currentActiveMatchServers.length - 1) {
+                isSwitchingServer = true;
+                currentServerIndex++; 
+                
+                showToastNotification(`توقف البث الحالي، جاري الانتقال تلقائياً إلى السيرفر: ${currentActiveMatchServers[currentServerIndex].name}...`);
+                
+                setTimeout(() => {
+                    const buttons = document.querySelectorAll('.server-btn');
+                    if(buttons[currentServerIndex]) {
+                        buttons[currentServerIndex].click();
+                    }
+                    isSwitchingServer = false;
+                }, 1500);
+            } else if (currentActiveMatchServers.length > 1 && currentServerIndex === currentActiveMatchServers.length - 1) {
+                showToastNotification("عذراً، تم تجربة جميع السيرفرات المتاحة لهذا البث.");
+            }
+        }
+
+        function playStream(url) {
+            if (hlsInstance) { hlsInstance.destroy(); }
+            const isHlsUrl = url.includes('m3u8') || url.includes('ts') || url.includes('stream') || url.includes('tracks-v1a1');
+
+            if (isHlsUrl && Hls.isSupported()) {
+                hlsInstance = new Hls({ maxLoadingMaxRetry: 5, manifestLoadingMaxRetry: 5 });
+                hlsInstance.loadSource(url);
+                hlsInstance.attachMedia(videoElement);
+                
+                hlsInstance.on(Hls.Events.ERROR, (event, data) => {
+                    if (data.fatal) {
+                        switch (data.type) {
+                            case Hls.ErrorTypes.NETWORK_ERROR:
+                                hlsInstance.startLoad();
+                                break;
+                            case Hls.ErrorTypes.MEDIA_ERROR:
+                                hlsInstance.recoverMediaError();
+                                break;
+                            default:
+                                setTimeout(() => { handleServerAutoSwitch(); }, 2000);
+                                break;
+                        }
+                    }
+                });
+
+                hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
+                    player.play(); triggerFullscreenAndLandscape();
+                });
+            } 
+            else {
+                videoElement.src = url;
+                player.play(); triggerFullscreenAndLandscape();
+            }
+        }
+
+        videoElement.addEventListener('error', () => { 
+            setTimeout(() => {
+                if (videoElement.error) {
+                    handleServerAutoSwitch(); 
+                }
+            }, 3000); 
+        });
+
+        function activeMatchPlayer(matchId) {
+            const match = todayMatches.find(m => m.id === matchId);
+            if (!match) return;
+
+            document.getElementById('tomorrow-slider-wrapper').classList.add('hidden');
+            const wrapper = document.getElementById('player-wrapper');
+            wrapper.classList.add('active');
+            wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            document.getElementById('current-match-title').innerText = `${match.teamA} ضد ${match.teamB}`;
+            const serversContainer = document.getElementById('servers-container');
+            serversContainer.innerHTML = ''; 
+
+            currentActiveMatchServers = match.servers;
+            currentServerIndex = 0;
+            isSwitchingServer = false;
+
+            if(match.servers.length === 0) {
+                serversContainer.innerHTML = `<span class="text-xs text-zinc-500 italic">لا توجد سيرفرات متوفرة للبث حالياً.</span>`;
+                return;
+            }
+
+            match.servers.forEach((server, index) => {
+                const btn = document.createElement('button');
+                btn.className = `px-4 py-2 text-xs font-black rounded bg-zinc-800 border border-zinc-700 text-zinc-300 hover:bg-[#e50914] hover:text-white hover:border-[#e50914] transition duration-200 server-btn`;
+                btn.innerText = server.name;
+                btn.onclick = () => {
+                    currentServerIndex = index; 
+                    document.querySelectorAll('.server-btn').forEach(b => b.className = b.className.replace('bg-[#e50914] text-white border-[#e50914]', 'bg-zinc-800 text-zinc-300 border-zinc-700'));
+                    btn.className = btn.className.replace('bg-zinc-800 text-zinc-300 border-zinc-700', 'bg-[#e50914] text-white border-[#e50914]');
+                    playStream(server.url);
+                };
+                serversContainer.appendChild(btn);
+                if (index === 0) btn.click();
+            });
+        }
+
+        document.addEventListener('fullscreenchange', () => {
+            if (!document.fullscreenElement && screen.orientation && screen.orientation.unlock) screen.orientation.unlock();
+        });
+        document.addEventListener('webkitfullscreenchange', () => {
+            if (!document.webkitFullscreenElement && screen.orientation && screen.orientation.unlock) screen.orientation.unlock();
+        });
+
+        function renderTodayMatches() {
+            const container = document.getElementById('today-matches-list');
+            container.innerHTML = '';
+            if(todayMatches.length === 0) {
+                container.innerHTML = `<div class="text-center py-6 text-xs text-zinc-500 italic">لا توجد مباريات مباشرة اليوم.</div>`;
+                return;
+            }
+            todayMatches.forEach(match => {
+                const card = document.createElement('div');
+                const liveBorder = match.isLive ? "border-[#e50914]/40 shadow-[0_4px_20px_rgba(229,9,20,0.15)]" : "border-zinc-800/80 shadow-black";
+                card.className = `bg-zinc-900/60 backdrop-blur-md border p-4 rounded-xl cursor-pointer hover:scale-[1.02] hover:border-zinc-700 transition duration-300 shadow-xl ${liveBorder}`;
+                card.setAttribute('onclick', `activeMatchPlayer(${match.id})`);
+                card.innerHTML = `
+                    <div class="flex justify-between items-center text-[11px] text-zinc-400 font-bold mb-2.5">
+                        <span>🏆 ${match.league}</span>
+                        <span class="${match.statusColor}">${match.status}</span>
+                    </div>
+                    <div class="flex justify-between items-center text-center">
+                        <div class="w-1/3 flex flex-col items-center"><img src="${match.logoA}" class="w-8 h-8 object-contain mb-1.5 filter drop-shadow" onerror="this.src='https://placehold.co/40x40?text=Logo'"><span class="font-black text-xs text-zinc-100">${match.teamA}</span></div>
+                        <div class="w-1/3"><span class="bg-black/60 text-zinc-300 px-2.5 py-1 rounded text-[11px] font-mono border border-zinc-800 shadow-inner">${match.time}</span></div>
+                        <div class="w-1/3 flex flex-col items-center"><img src="${match.logoB}" class="w-8 h-8 object-contain mb-1.5 filter drop-shadow" onerror="this.src='https://placehold.co/40x40?text=Logo'"><span class="font-black text-xs text-zinc-100">${match.teamB}</span></div>
+                    </div>`;
+                container.appendChild(card);
+            });
+        }
+
+        function goBack() {
+            if (player) player.pause();
+            document.getElementById('player-wrapper').classList.remove('active');
+            document.getElementById('tomorrow-slider-wrapper').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function shareApp() {
+            const shareData = { title: 'MatchFabor', text: 'شاهد أقوى المباريات الحية بث مباشر بدون تقطيع على MatchFabor!', url: window.location.href };
+            if (navigator.share) { navigator.share(shareData).catch((error) => console.log(error)); } 
+            else { navigator.clipboard.writeText(window.location.href); alert('تم نسخ رابط منصة البث بنجاح!'); }
+        }
+
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('current-date').innerText = new Date().toLocaleDateString('ar-MA', options);
+
+        fetchTodayMatches(); fetchTomorrowMatches();
+        setInterval(fetchTodayMatches, 60000);
+    </script>
 </body>
 </html>
